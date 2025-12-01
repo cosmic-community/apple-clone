@@ -13,15 +13,34 @@ export default async function HomePage() {
   ])
 
   // Get the first product for main hero
-  const mainProduct = products[0]
+  const mainProduct = products.length > 0 ? products[0] : null
   // Get the second product for secondary hero
-  const secondaryProduct = products[1]
+  const secondaryProduct = products.length > 1 ? products[1] : null
   // Get remaining products for grid
   const gridProducts = products.slice(2, 6)
   
   // Get trade-in and card promotions
   const tradeInPromo = promotions.find(p => p.slug === 'apple-trade-in')
   const shoppingEventPromo = promotions.find(p => p.slug === 'shopping-event')
+
+  // Check if we have any content at all
+  const hasContent = products.length > 0 || entertainment.length > 0 || promotions.length > 0
+
+  if (!hasContent) {
+    return (
+      <div className="bg-white min-h-screen flex items-center justify-center">
+        <div className="text-center px-4">
+          <h1 className="text-4xl font-semibold text-apple-gray-800 mb-4">Welcome to Apple Clone</h1>
+          <p className="text-xl text-apple-gray-500 mb-8">
+            No content found. Please add content to your Cosmic bucket.
+          </p>
+          <p className="text-sm text-apple-gray-400">
+            Required Object Types: products, entertainment, promotions
+          </p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="bg-white">
@@ -52,15 +71,17 @@ export default async function HomePage() {
       </section>
 
       {/* Product Grid */}
-      <section className="py-3 bg-white">
-        <div className="max-w-apple-wide mx-auto px-1.5">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {gridProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
+      {gridProducts.length > 0 && (
+        <section className="py-3 bg-white">
+          <div className="max-w-apple-wide mx-auto px-1.5">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {gridProducts.map((product) => (
+                <ProductCard key={product.id} product={product} />
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Promo Cards Section */}
       <section className="py-3 bg-white">
@@ -86,7 +107,9 @@ export default async function HomePage() {
       </section>
 
       {/* Entertainment Section */}
-      <EntertainmentSection items={entertainment} />
+      {entertainment.length > 0 && (
+        <EntertainmentSection items={entertainment} />
+      )}
     </div>
   )
 }
